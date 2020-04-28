@@ -11,3 +11,9 @@ spring:
 logging:
   level:
     com.godric.cms.dao: trace
+
+mybatis-plus:
+  mapper-locations: classpath:/xml/*.xml
+  type-aliases-package: com.godric.cms.common.po.*
+  configuration:
+    map-underscore-to-camel-case: true

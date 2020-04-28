@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @TableName("car_image")
-public class CarImage {
+public class CarImagePO {
 
     @TableId("id")
     private Integer id;
@@ -40,6 +40,6 @@ public class CarImage {
     private LocalDateTime updateTime;
 
     @Tolerate
-    public CarImage() {}
+    public CarImagePO() {}
 
 }
