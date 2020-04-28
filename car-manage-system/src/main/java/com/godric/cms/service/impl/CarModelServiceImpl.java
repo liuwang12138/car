@@ -6,14 +6,18 @@ import com.godric.cms.common.dto.CarModelDetailDTO;
 import com.godric.cms.common.dto.ResultMessage;
 import com.godric.cms.common.po.CarImagePO;
 import com.godric.cms.common.po.CarModelPO;
+import com.godric.cms.common.po.PreOrderRecordPO;
+import com.godric.cms.common.po.UserPO;
 import com.godric.cms.dao.CarImageDao;
 import com.godric.cms.dao.CarModelDao;
+import com.godric.cms.dao.PreOrderRecordDao;
 import com.godric.cms.service.CarModelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +33,9 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Autowired
     CarImageDao carImageDao;
+
+    @Autowired
+    PreOrderRecordDao preOrderRecordDao;
 
     @Override
     public ResultMessage<List<CarModelDTO>> getCarModelList(String modelName, Integer pageNum, Integer pageSize) {
@@ -95,5 +102,46 @@ public class CarModelServiceImpl implements CarModelService {
 
         detailDto.setImageList(imageList);
         return ResultMessage.success(detailDto);
+    }
+
+    @Override
+    @Transactional
+    public ResultMessage<Void> preOrderCarModel(Integer carModelId, HttpServletRequest request) {
+        UserPO user = (UserPO) request.getSession().getAttribute("user");
+
+        if (Objects.isNull(user)) {
+            return ResultMessage.fail("用户未登录！");
+        }
+
+        Integer userId = user.getId();
+        QueryWrapper<PreOrderRecordPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("car_model_id", carModelId);
+        queryWrapper.eq("user_id", userId);
+
+        CarModelPO carModelPo = carModelDao.selectById(carModelId);
+        if (Objects.isNull(carModelPo)) {
+            return ResultMessage.fail("找不到对应的车型！");
+        }
+
+        if (carModelPo.getStock() < 1) {
+            return ResultMessage.fail("对应车型库存不足，请选择其他车型！");
+        }
+
+        List<PreOrderRecordPO> preOrderRecordPos = preOrderRecordDao.selectList(queryWrapper);
+        if (preOrderRecordPos != null && !preOrderRecordPos.isEmpty()) {
+            return ResultMessage.fail("您已经预购过此车型，不能重复购买！");
+        }
+
+        PreOrderRecordPO po = PreOrderRecordPO.builder()
+                                              .carModelId(carModelId)
+                                              .userId(userId).build();
+
+        preOrderRecordDao.insert(po);
+
+        // 对应车型的库存数量 -1
+        carModelPo.setStock(carModelPo.getStock() - 1);
+        carModelDao.updateById(carModelPo);
+
+        return ResultMessage.success("预购成功");
     }
 }

@@ -4,6 +4,7 @@ import com.godric.cms.common.dto.CarModelDTO;
 import com.godric.cms.common.dto.CarModelDetailDTO;
 import com.godric.cms.common.dto.ResultMessage;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -36,4 +37,12 @@ public interface CarModelService {
      * @return model detail dto
      */
     ResultMessage<CarModelDetailDTO> getCarModelDetail(Integer modelId);
+
+    /**
+     * pre order a car model
+     * @param carModelId car model id
+     * @param request request
+     * @return whether pre order is success or not
+     */
+    ResultMessage<Void> preOrderCarModel(Integer carModelId, HttpServletRequest request);
 }

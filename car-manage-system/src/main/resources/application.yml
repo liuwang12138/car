@@ -17,3 +17,7 @@ mybatis-plus:
   type-aliases-package: com.godric.cms.common.po.*
   configuration:
     map-underscore-to-camel-case: true
+
+# 配置项目的时候需要进行修改
+file:
+  uploadFolder: F:\\workspace_j\\library\\car\\car-manage-system\\src\\main\\resources\\static\\upload\\
