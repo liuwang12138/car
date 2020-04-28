@@ -15,6 +15,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -51,6 +52,15 @@ public class CarModelController {
     public ResultMessage<Void> preOrderCarModel(@NotNull Integer carModelId,
                                                 HttpServletRequest request) {
         return carModelService.preOrderCarModel(carModelId, request);
+    }
+
+    @PostMapping("test")
+    public ResultMessage<Void> test() {
+
+        BigDecimal b = null;
+        b.add(BigDecimal.ZERO);
+        return ResultMessage.success();
+
     }
 
 
