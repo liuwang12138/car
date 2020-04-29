@@ -1,6 +1,7 @@
 package com.godric.cms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.godric.cms.common.CmsConstants;
 import com.godric.cms.common.dto.MyInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
 import com.godric.cms.common.po.UserPO;
@@ -25,6 +26,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultMessage<Void> register(String username, String password, String realName, String phone) {
 
+        if (CmsConstants.ADMIN_USERNAME.equals(username)) {
+            return ResultMessage.fail("不能以admin作为用户名！");
+        }
+
         QueryWrapper<UserPO> queryWrapper = new QueryWrapper<UserPO>()
                                                 .eq("username", username);
         UserPO existUser = userDao.selectOne(queryWrapper);
@@ -46,6 +51,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultMessage<UserPO> login(String username, String password, HttpServletRequest request) {
+
+        if (CmsConstants.ADMIN_USERNAME.equals(username)) {
+            return ResultMessage.fail("管理员用户请去往管理员端登陆");
+        }
+
         QueryWrapper<UserPO> queryWrapper = new QueryWrapper<UserPO>()
                                                         .eq("username", username)
                                                         .eq("password", password);

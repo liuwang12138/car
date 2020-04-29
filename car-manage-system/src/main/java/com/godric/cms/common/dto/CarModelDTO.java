@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class CarModelDTO {
 
+    private Integer id;
+
     private String modelName;
 
     private Integer stock;

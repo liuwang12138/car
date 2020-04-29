@@ -9,21 +9,4 @@ import java.util.List;
 
 public interface CarModelDao extends BaseMapper<CarModelPO> {
 
-    /**
-     * get car model list
-     * @param modelName can be null
-     * @param startNum start number
-     * @param pageSize page size
-     * @return car model list
-     */
-    List<CarModelDTO> getCarModelList(@Param("modelName") String modelName,
-                                      @Param("startNum") Integer startNum,
-                                      @Param("pageSize") Integer pageSize);
-
-    /**
-     * count car model
-     * @param modelName can be null
-     * @return the size of list
-     */
-    Integer countCarModelList(@Param("modelName") String modelName);
 }

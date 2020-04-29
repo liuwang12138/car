@@ -2,7 +2,9 @@ package com.godric.cms.controller;
 
 import com.godric.cms.common.dto.CarModelDTO;
 import com.godric.cms.common.dto.CarModelDetailDTO;
+import com.godric.cms.common.dto.PreOrderInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
+import com.godric.cms.common.po.UserPO;
 import com.godric.cms.service.CarModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +17,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("carModel")
-public class CarModelController {
+public class CarModelController extends BaseController {
 
     @Autowired
     public CarModelService carModelService;
@@ -32,8 +33,9 @@ public class CarModelController {
     @PostMapping("insert")
     public ResultMessage<Void> insertCarModel(@NotBlank String modelName,
                                               @NotNull @Min(1) Integer stock,
-                                              @NotEmpty List<String> imageList) {
-        return carModelService.insertCarModel(modelName, stock, imageList);
+                                              @NotBlank String mainImageUrl,
+                                              @NotEmpty List<String> detailImageList) {
+        return carModelService.insertCarModel(modelName, stock, mainImageUrl, detailImageList);
     }
 
     @PostMapping("list")
@@ -48,21 +50,44 @@ public class CarModelController {
         return carModelService.getCarModelDetail(modelId);
     }
 
-    @PostMapping("preOrderCarModel")
+    @PostMapping("preOrder")
     public ResultMessage<Void> preOrderCarModel(@NotNull Integer carModelId,
                                                 HttpServletRequest request) {
-        return carModelService.preOrderCarModel(carModelId, request);
-    }
-
-    @PostMapping("test")
-    public ResultMessage<Void> test() {
-
-        BigDecimal b = null;
-        b.add(BigDecimal.ZERO);
-        return ResultMessage.success();
+        ResultMessage<UserPO> loginUserInfo = this.getLoginUserInfo(request);
+        if (!loginUserInfo.isSuccess()) {
+            ResultMessage.fail(loginUserInfo.getMessage());
+        }
+        Integer userId = loginUserInfo.getData().getId();
+        return carModelService.preOrderCarModel(carModelId, userId);
 
     }
 
+    @PostMapping("cancelPreOrder")
+    public ResultMessage<Void> cancelPreOrder(@NotNull Integer preOrderId,
+                                              HttpServletRequest request) {
 
+        ResultMessage<UserPO> loginUserInfo = this.getLoginUserInfo(request);
+        if (!loginUserInfo.isSuccess()) {
+            ResultMessage.fail(loginUserInfo.getMessage());
+        }
+        Integer userId = loginUserInfo.getData().getId();
+
+        return carModelService.cancelPreOrder(preOrderId, userId);
+    }
+
+
+    @PostMapping("getMyPreOrderInfo")
+    public ResultMessage<List<PreOrderInfoDTO>> getMyPreOrderInfo(Integer pageNum,
+                                                            Integer pageSize,
+                                                            HttpServletRequest request) {
+
+        ResultMessage<UserPO> loginUserInfo = this.getLoginUserInfo(request);
+        if (!loginUserInfo.isSuccess()) {
+            return ResultMessage.fail(loginUserInfo.getMessage());
+        }
+        Integer userId = loginUserInfo.getData().getId();
+
+        return carModelService.getPreOrderInfo(userId, pageNum, pageSize);
+    }
 
 }

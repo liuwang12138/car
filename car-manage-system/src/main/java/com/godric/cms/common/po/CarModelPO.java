@@ -29,6 +29,12 @@ public class CarModelPO {
     @TableField("stock")
     private Integer stock;
 
+    @TableField("main_image_url")
+    private String mainImageUrl;
+
+    @TableField("detail_image_url")
+    private String detailImageUrl;
+
     @TableField("create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
