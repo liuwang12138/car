@@ -1,9 +1,13 @@
 package com.godric.cms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.godric.cms.common.CmsConstants;
 import com.godric.cms.common.dto.MyInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
+import com.godric.cms.common.dto.UserDTO;
 import com.godric.cms.common.po.UserPO;
 import com.godric.cms.dao.UserDao;
 import com.godric.cms.service.UserService;
@@ -12,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -97,5 +104,50 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, myInfo);
 
         return ResultMessage.success(myInfo);
+    }
+
+    @Override
+    public ResultMessage<List<UserDTO>> getUserList(String username, LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize) {
+
+        IPage<UserPO> userPoPage;
+        if (pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0) {
+            userPoPage = new Page<>(pageNum, pageSize);
+        } else {
+            userPoPage = new Page<>(1, Integer.MAX_VALUE);
+        }
+
+        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(username)) {
+            queryWrapper.like("username", username);
+        }
+        if (startTime != null) {
+            queryWrapper.gt("create_time", startTime);
+        }
+        if (endTime != null) {
+            queryWrapper.lt("create_time", endTime);
+        }
+
+        IPage<UserPO> userPos = userDao.selectPage(userPoPage, queryWrapper);
+
+        List<UserDTO> list = new ArrayList<>();
+        userPos.getRecords().forEach(po -> {
+            UserDTO dto = new UserDTO();
+
+            BeanUtils.copyProperties(po, dto);
+            dto.setRegisterTime(po.getCreateTime());
+
+            list.add(dto);
+        });
+
+        return ResultMessage.success(list, (int)userPos.getTotal());
+    }
+
+    @Override
+    public ResultMessage<Void> deleteById(Integer userId) {
+        if (userDao.deleteById(userId) > 0) {
+            return ResultMessage.success("删除成功");
+        }
+
+        return ResultMessage.fail("找不到对应id的用户！");
     }
 }

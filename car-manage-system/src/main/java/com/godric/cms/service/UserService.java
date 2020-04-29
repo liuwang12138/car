@@ -2,9 +2,12 @@ package com.godric.cms.service;
 
 import com.godric.cms.common.dto.MyInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
+import com.godric.cms.common.dto.UserDTO;
 import com.godric.cms.common.po.UserPO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Godric
@@ -48,4 +51,22 @@ public interface UserService {
      * @return my info
      */
     ResultMessage<MyInfoDTO> getMyInfo(HttpServletRequest request);
+
+    /**
+     * admin get user list
+     * @param username username
+     * @param startTime register start time
+     * @param endTime register end time
+     * @param pageNum page number
+     * @param pageSize page size
+     * @return user list
+     */
+    ResultMessage<List<UserDTO>> getUserList(String username, LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize);
+
+    /**
+     * admin delete user by id
+     * @param userId user id
+     * @return whether delete is success or not
+     */
+    ResultMessage<Void> deleteById(Integer userId);
 }
