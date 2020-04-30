@@ -1,4 +1,4 @@
-package com.godric.cms.common;
+package com.godric.cms.common.constants;
 
 /**
  * @author Godric

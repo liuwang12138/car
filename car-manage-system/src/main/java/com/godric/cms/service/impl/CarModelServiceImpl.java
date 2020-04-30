@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -168,14 +170,14 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public ResultMessage<List<PreOrderInfoDTO>> getPreOrderInfo(Integer userId, Integer pageNum, Integer pageSize) {
+    public ResultMessage<List<PreOrderInfoDTO>> getPreOrderInfo(Integer userId, LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize) {
         Integer startNum = null;
         if (pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0) {
             startNum = (pageNum - 1) * pageSize;
         }
 
-        List<PreOrderInfoDTO> preOrderInfoList = preOrderRecordDao.getPreOrderInfo(userId, startNum, pageSize);
-        Integer count = preOrderRecordDao.countPreOrderInfo(userId);
+        List<PreOrderInfoDTO> preOrderInfoList = preOrderRecordDao.getPreOrderInfo(userId, startTime, endTime, startNum, pageSize);
+        Integer count = preOrderRecordDao.countPreOrderInfo(userId, startTime, endTime);
         return ResultMessage.success(preOrderInfoList, count);
     }
 }

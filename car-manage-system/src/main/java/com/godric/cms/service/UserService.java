@@ -69,4 +69,18 @@ public interface UserService {
      * @return whether delete is success or not
      */
     ResultMessage<Void> deleteById(Integer userId);
+
+    /**
+     * get user info by id
+     * @param userId user id
+     * @return user info
+     */
+    ResultMessage<UserDTO> getUserInfoById(Integer userId);
+
+    /**
+     * update user info
+     * @param po user po
+     * @return whether update is success or not
+     */
+    ResultMessage<Void> updateUserInfo(UserPO po);
 }

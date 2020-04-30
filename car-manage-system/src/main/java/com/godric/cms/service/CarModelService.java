@@ -5,6 +5,7 @@ import com.godric.cms.common.dto.CarModelDetailDTO;
 import com.godric.cms.common.dto.PreOrderInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -58,9 +59,11 @@ public interface CarModelService {
     /**
      * get user pre order records
      * @param userId user id
+     * @param startTime start time
+     * @param endTime end time
      * @param pageNum page number
      * @param pageSize page size
      * @return pre order info
      */
-    ResultMessage<List<PreOrderInfoDTO>> getPreOrderInfo(Integer userId, Integer pageNum, Integer pageSize);
+    ResultMessage<List<PreOrderInfoDTO>> getPreOrderInfo(Integer userId, LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize);
 }

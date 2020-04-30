@@ -1,10 +1,13 @@
-package com.godric.cms.controller;
+package com.godric.cms.common.handler;
 
 import com.godric.cms.common.dto.ResultMessage;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 /**
  * @author Godric
@@ -34,6 +37,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResultMessage<Void> error(ConstraintViolationException e) {
         return ResultMessage.fail(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResultMessage<Void> error(MethodArgumentNotValidException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+
+        StringBuilder errorInfo = new StringBuilder();
+        if (!fieldErrors.isEmpty()) {
+            errorInfo.append(fieldErrors.get(0).getField());
+            for (int i=1; i<fieldErrors.size(); i++) {
+                errorInfo.append(", ").append(fieldErrors.get(i).getField());
+            }
+        }
+        errorInfo.append(" 字段参数不合法！");
+        return ResultMessage.fail(errorInfo.toString());
     }
 
 }

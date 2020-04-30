@@ -9,10 +9,13 @@
         select
             p.`id` as preOrderId,
             c.`model_name` as carModelName,
+            u.`username` as username,
             p.`create_time` as preOrderTime
         from `pre_order_record` p
         left join `car_model` c on p.`car_model_id` = c.`id`
-        where p.`user_id` = #{userId}
+        left join `user` u on p.`user_id` = u.`id`
+        <include refid="queryCondition" />
+        order by p.`create_time` desc
         <if test="startNum != null and startNum >= 0 and pageSize != null and pageSize > 0">
             limit #{startNum}, #{pageSize}
         </if>
@@ -21,6 +24,20 @@
         select
             count(1)
         from `pre_order_record` p
-        where p.`user_id` = #{userId}
+        <include refid="queryCondition" />
     </select>
+
+    <sql id="queryCondition">
+        <where>
+            <if test="userId != null">
+                p.`user_id` = #{userId}
+            </if>
+            <if test="startTime != null">
+                and p.`create_time` &gt; #{startTime}
+            </if>
+            <if test="endTime != null">
+                and p.`create_time` &lt; #{endTime}
+            </if>
+        </where>
+    </sql>
 </mapper>

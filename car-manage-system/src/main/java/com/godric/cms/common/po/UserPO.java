@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Tolerate;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -20,18 +21,23 @@ import java.time.LocalDateTime;
 @TableName("user")
 public class UserPO {
 
+    @NotNull(message = "id不能为空")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    @NotNull(message = "username不能为空")
     @TableField("username")
     private String username;
 
+    @NotNull(message = "password")
     @TableField("password")
     private String password;
 
+    @NotNull(message = "realName")
     @TableField("real_name")
     private String realName;
 
+    @NotNull(message = "phone")
     @TableField("phone")
     private String phone;
 

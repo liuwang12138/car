@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.godric.cms.common.CmsConstants;
+import com.godric.cms.common.constants.CmsConstants;
 import com.godric.cms.common.dto.MyInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
 import com.godric.cms.common.dto.UserDTO;
@@ -149,5 +149,24 @@ public class UserServiceImpl implements UserService {
         }
 
         return ResultMessage.fail("找不到对应id的用户！");
+    }
+
+    @Override
+    public ResultMessage<UserDTO> getUserInfoById(Integer userId) {
+        UserPO po = userDao.selectById(userId);
+        if (Objects.isNull(po)) {
+            return ResultMessage.fail("找不到对应id的用户记录");
+        }
+        UserDTO dto = new UserDTO();
+        BeanUtils.copyProperties(po, dto);
+        return ResultMessage.success(dto);
+    }
+
+    @Override
+    public ResultMessage<Void> updateUserInfo(UserPO po) {
+        if (userDao.updateById(po) > 0) {
+            return ResultMessage.success("更新成功！");
+        }
+        return ResultMessage.fail("找不到更新的用户记录！");
     }
 }

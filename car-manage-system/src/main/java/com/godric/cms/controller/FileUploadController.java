@@ -28,6 +28,12 @@ public class FileUploadController {
 
     private static final String UPLOAD_PATH_PREFIX = "upload/";
 
+    /**
+     * upload image
+     * @param multipartFile image
+     * @param request request
+     * @return image url
+     */
     @PostMapping("upload")
     public ResultMessage<FileUploadRespInfoDTO> fileUpload(@NotNull @RequestParam MultipartFile multipartFile,
                                                            HttpServletRequest request) {

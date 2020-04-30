@@ -5,17 +5,12 @@ import com.godric.cms.common.dto.CarModelDetailDTO;
 import com.godric.cms.common.dto.PreOrderInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
 import com.godric.cms.common.po.UserPO;
-import com.godric.cms.service.CarModelService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -27,17 +22,13 @@ import java.util.List;
 @RequestMapping("carModel")
 public class CarModelController extends BaseController {
 
-    @Autowired
-    public CarModelService carModelService;
-
-    @PostMapping("insert")
-    public ResultMessage<Void> insertCarModel(@NotBlank String modelName,
-                                              @NotNull @Min(1) Integer stock,
-                                              @NotBlank String mainImageUrl,
-                                              @NotEmpty List<String> detailImageList) {
-        return carModelService.insertCarModel(modelName, stock, mainImageUrl, detailImageList);
-    }
-
+    /**
+     * user get car model list
+     * @param modelName model name
+     * @param pageNum page number
+     * @param pageSize page size
+     * @return car model list
+     */
     @PostMapping("list")
     public ResultMessage<List<CarModelDTO>> getCarModelList(String modelName,
                                                             Integer pageNum,
@@ -45,11 +36,22 @@ public class CarModelController extends BaseController {
         return carModelService.getCarModelList(modelName, pageNum, pageSize);
     }
 
+    /**
+     * get car model detail
+     * @param modelId model id
+     * @return car model detail info
+     */
     @PostMapping("detail")
     public ResultMessage<CarModelDetailDTO> getCarModelDetail(@NotNull Integer modelId) {
         return carModelService.getCarModelDetail(modelId);
     }
 
+    /**
+     * user pre order car model
+     * @param carModelId car model id
+     * @param request request
+     * @return whether pre order is success or not
+     */
     @PostMapping("preOrder")
     public ResultMessage<Void> preOrderCarModel(@NotNull Integer carModelId,
                                                 HttpServletRequest request) {
@@ -62,6 +64,12 @@ public class CarModelController extends BaseController {
 
     }
 
+    /**
+     * cancel my pre order
+     * @param preOrderId pre order id
+     * @param request request
+     * @return whether cancel is success or not
+     */
     @PostMapping("cancelPreOrder")
     public ResultMessage<Void> cancelPreOrder(@NotNull Integer preOrderId,
                                               HttpServletRequest request) {
@@ -75,11 +83,17 @@ public class CarModelController extends BaseController {
         return carModelService.cancelPreOrder(preOrderId, userId);
     }
 
-
+    /**
+     * get my pre order info list
+     * @param pageNum page number
+     * @param pageSize page size
+     * @param request request
+     * @return my pre order info list
+     */
     @PostMapping("getMyPreOrderInfo")
     public ResultMessage<List<PreOrderInfoDTO>> getMyPreOrderInfo(Integer pageNum,
-                                                            Integer pageSize,
-                                                            HttpServletRequest request) {
+                                                                  Integer pageSize,
+                                                                  HttpServletRequest request) {
 
         ResultMessage<UserPO> loginUserInfo = this.getLoginUserInfo(request);
         if (!loginUserInfo.isSuccess()) {
@@ -87,7 +101,7 @@ public class CarModelController extends BaseController {
         }
         Integer userId = loginUserInfo.getData().getId();
 
-        return carModelService.getPreOrderInfo(userId, pageNum, pageSize);
+        return carModelService.getPreOrderInfo(userId, null, null, pageNum, pageSize);
     }
 
 }

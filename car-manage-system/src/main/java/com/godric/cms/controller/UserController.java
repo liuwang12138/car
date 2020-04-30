@@ -25,6 +25,14 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    /**
+     * user register
+     * @param username username, can't be blank
+     * @param password password, can't be blank
+     * @param realName real name, can't be blank
+     * @param phone phone, can't be blank
+     * @return whether register is success or not
+     */
     @PostMapping("register")
     public ResultMessage<Void> register(@NotBlank String username,
                                         @NotBlank String password,
@@ -33,6 +41,13 @@ public class UserController {
         return userService.register(username, password, realName, phone);
     }
 
+    /**
+     * user login
+     * @param username username, can't be blank
+     * @param password password, can't be blank
+     * @param request request
+     * @return whether login is success or not, also with user info
+     */
     @PostMapping("login")
     public ResultMessage<UserPO> login(@NotBlank String username,
                                        @NotBlank String password,
@@ -40,6 +55,13 @@ public class UserController {
         return userService.login(username, password, request);
     }
 
+    /**
+     * user update my password, need to login before
+     * @param oldPassword old password
+     * @param newPassword new password
+     * @param request request
+     * @return whether update is success or not
+     */
     @PostMapping("password/update")
     public ResultMessage<Void> updatePassword(@NotBlank String oldPassword,
                                               @NotBlank String newPassword,
@@ -48,6 +70,11 @@ public class UserController {
         return userService.updatePassword(oldPassword, newPassword, request);
     }
 
+    /**
+     * get my info, user need to login before
+     * @param request request
+     * @return my info, include username, real name and phone
+     */
     @PostMapping("my/info")
     public ResultMessage<MyInfoDTO> getMyInfo(HttpServletRequest request) {
         return userService.getMyInfo(request);
