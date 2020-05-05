@@ -9,6 +9,7 @@ import Maps from '@/pages/Maps'
 import Login from '@/pages/Login'
 import Detail from '@/pages/Detail'
 import Mine from '@/pages/Mine'
+import Future from '@/pages/Future'
 
 Vue.use(Router)
 Vue.use(ElementUI)
@@ -35,6 +36,10 @@ export default new Router({
         path: '/Detail/:id',
         name: 'Detail',
         component: Detail
+    },
+    {
+        path: '/Future',
+        component: Future
     },
     {
         path: '/Mine',

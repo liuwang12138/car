@@ -24,27 +24,17 @@ import cMenu from "@/components/Menu"
 import cBanner from "@/components/Banner"
 import cCard from "@/components/Card"
 import cFooter from "@/components/Footer"
+import { carList } from '../api/index'
 export default {
     name: "Home",
     data() {
         return {
-            carList: [
-                {
-                    type: "XC40",
-                    desc: "沃尔沃XC40以唯我不同的北欧设计诠释时尚格调，以沃尔沃家族DNA彰显豪华气质。人性化设计与智能科技带来享我所想的随心所驭。",
-                    url: require("@/assets/xc401.jpg")
-                },
-                {
-                    type: "全新S60",
-                    desc: "沃尔沃全新S60北欧豪华中型轿车，健康随行、安全随心、动感随型，护佑您和家人出行的每一步。",
-                    url: require("@/assets/s60.jpg")
-                },
-                {
-                    type: "XC90",
-                    desc: "沃尔沃XC90承袭北欧经典，至简美学诠释豪华品味，匠心造诣雕琢大器空间，前瞻创新洞见趋势。驰骋天地，执掌未来格局。",
-                    url: require("@/assets/xc90-20190903-1.jpg")
-                },
-            ]
+            carList: [],
+            query: {
+                modelName: '',
+                pageNum: 1,
+                pageSize: 3
+            },
         }
     },
     components: {
@@ -52,6 +42,23 @@ export default {
         cBanner,
         cCard,
         cFooter
+    },
+    created() {
+        this.getData();
+    },
+    methods: {
+        getData() {
+            carList(this.query).then(res => {
+                if(res.data.code == 201) {
+                    console.log(res);
+                    this.carList = res.data.data;
+                } else {
+                    this.$message.error(res.data.message);
+                }
+            }).catch((err) => {
+                this.$message.error('请求失败');
+            });
+        },
     }
 }
 </script>

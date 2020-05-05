@@ -4,7 +4,8 @@
             <img :src="item.mainImageUrl" alt="">
             <div class="car-right">
                 <p>车型：{{item.modelName}}</p>
-                <p>价格：{{item.stock}}</p>
+                <p>价格：{{item.price}}</p>
+                <p>库存：{{item.stock}}</p>
                 <p>上线日期：{{item.createTime}}</p>
                 <a class="car-a" @click="goDetail(item.id)">查看详情 > </a>
             </div>

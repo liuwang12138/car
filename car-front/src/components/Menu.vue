@@ -65,6 +65,10 @@ export default {
           title: "地图"
         },
         {
+          index: "Future",
+          title: "未来驾驶"
+        },
+        {
           index: "Mine",
           title: "我的信息"
         }

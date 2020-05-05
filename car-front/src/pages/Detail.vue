@@ -1,22 +1,30 @@
 <template>
     <div class="detail">
         <c-menu></c-menu>
-        <!-- <div @click="back">返回</div> -->
-        <div>
-            <div>车型：{{detail.modelName}}</div>
-            <div>价格{{detail.stock}}</div>
-            <div>简介：{{detail.desc}}</div>
-            <div>发布时间：{{detail.createTime}}</div>
-            <div @click="order">预定</div>
-            <div v-for="(item, index) in detail.imageList" :key = index>
-                <div>{{item}}</div>
+        <div class="dback" @click="back"> 《 返回</div>
+        <div class="detail-wrap">
+            <div class="detail-top">
+                <img :src="detail.mainImageUrl" alt="">
+                <div class="car-right">
+                    <div>车型：{{detail.modelName}}</div>
+                    <div>价格：{{detail.price}}</div>
+                    <div>库存：{{detail.stock}}</div>
+                    <div>简介：{{detail.desc}}</div>
+                    <div>发布时间：{{detail.createTime}}</div>
+                    <el-button @click="order">预定</el-button>
+                </div>
+            </div>
+            <div class="dimg-wrap" v-for="(item, index) in detail.imageList" :key = index>
+                <img :src="item"/>
             </div>
         </div>
+        <c-footer></c-footer>
     </div>
 </template>
 
 <script>
 import cMenu from "@/components/Menu"
+import cFooter from "@/components/Footer"
 import { carDetail, preOrder } from '../api/index'
 export default {
     name: "Detail",
@@ -27,6 +35,7 @@ export default {
     },
     components: {
         cMenu,
+        cFooter
     },
     created() {
         this.getData();
@@ -56,16 +65,38 @@ export default {
             }).catch((err) => {
                 this.$message.error('请求失败');
             });
+        },
+        back() {
+            this.$router.go(-1);
         }
-        // back() {
-        //     this.$router.push({
-        //         path: 'List',
-        //     })
-        // }
     }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="stylus" rel="stylesheet/stylus">
+.dback
+    margin: 20px auto;
+    width: 1080px;
+    text-align: left;
+.detail-wrap
+    margin: 20px auto;
+    width: 1080px;
+    text-align: left;
+    .detail-top
+        display: flex;
+        img 
+            flex: 1;
+            width: 50%;
+        .car-right
+            flex: 1;
+            div
+                margin: 10px;
+                font-size: 18px;
+                color: #000;
+                text-align: left;
+    .dimg-wrap
+        margin: 40px 0;
+        img
+            margin: 10px 0;
+            width 100%;
 </style>

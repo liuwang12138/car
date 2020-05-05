@@ -1,10 +1,10 @@
 <template>
     <div class="cards">
         <div class="card-item" v-for="(item, index) in carList" :key="index">
-            <img class="card-img" :src="item.url">
-            <div class="card-title">{{item.type}}</div>
+            <img class="card-img" :src="item.mainImageUrl">
+            <div class="card-title">{{item.modelName}}</div>
             <div class="card-content">{{item.desc}}</div>
-            <a class="card-a">了解详情 > </a>
+            <a class="card-a" @click="goDetail(item.id)">了解详情 > </a>
         </div>
     </div>
 </template>
@@ -13,6 +13,13 @@
 export default {
     name: "Card",
     props: ["carList"],
+    methods: {
+        goDetail(id) {
+            this.$router.push({
+                path: `/Detail/${id}`,
+            })
+        }
+    }
 }
 </script>
 
