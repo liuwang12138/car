@@ -16,6 +16,7 @@ Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
 });
+
 Vue.prototype.$axios = axios;
 axios.defaults.withCredentials =true;
 const i18n = new VueI18n({

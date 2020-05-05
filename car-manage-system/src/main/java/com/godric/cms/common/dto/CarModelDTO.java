@@ -3,6 +3,7 @@ package com.godric.cms.common.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -17,11 +18,13 @@ public class CarModelDTO {
 
     private Integer stock;
 
+    private BigDecimal price;
+
     private String desc;
 
     private String mainImageUrl;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDateTime createTime;
 
 }

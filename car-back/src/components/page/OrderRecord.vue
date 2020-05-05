@@ -48,7 +48,7 @@ export default {
                 startTime: '',
                 endTime: '',
                 pageNum: 1,
-                pageSize: 2
+                pageSize: 10
             },
             tableData: [],
             pageTotal: 0,

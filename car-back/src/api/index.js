@@ -1,6 +1,7 @@
 // import axios from '../utils/axios';
 import axios from 'axios';
-const baseUrl = "http://192.168.199.182/"
+export const baseUrl = "http://192.168.199.182/"
+// export const baseUrl = "http://localhost/"
 
 export const fetchData = query => {
     return axios({
@@ -42,6 +43,14 @@ export const carModelInsert = query => {
     });
 };
 
+export const carModelDel = query => {
+    return axios({
+        url: baseUrl + 'admin/carModel/delete/by/id',
+        method: 'post',
+        params: query
+    })
+}
+
 export const userList = query => {
     return axios({
         url: baseUrl + 'admin/user/list/',
@@ -79,5 +88,17 @@ export const userUpdate = query => {
         url: baseUrl + 'admin/user/update/info/',
         method: 'post',
         params: query
+    });
+};
+
+
+export const uploadFile = query => {
+    return axios({
+        url: baseUrl + 'file/upload/',
+        method: 'post',
+        params: query,
+        headers: {
+            'Content-Type' : 'multipart/form-data'
+        },
     });
 };

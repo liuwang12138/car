@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -141,10 +144,12 @@ public class AdminController extends BaseController {
     @PostMapping("carModel/insert")
     public ResultMessage<Void> insertCarModel(@NotBlank String modelName,
                                               @NotNull @Min(1) Integer stock,
+                                              @NotNull @Min(0) BigDecimal price,
                                               @NotBlank String desc,
                                               @NotBlank String mainImageUrl,
-                                              @NotEmpty List<String> detailImageList) {
-        return carModelService.insertCarModel(modelName, stock, desc, mainImageUrl, detailImageList);
+                                              //@NotEmpty @RequestParam("detailImageList") List<String> detailImageList) {
+                                              @NotBlank String detailImageList) {
+        return carModelService.insertCarModel(modelName, stock, price, desc, mainImageUrl, detailImageList);
     }
 
     @PostMapping("carModel/delete/by/id")
@@ -156,10 +161,12 @@ public class AdminController extends BaseController {
     public ResultMessage<Void> updateCarModelById(@NotNull Integer carModelId,
                                                   @NotBlank String modelName,
                                                   @NotNull Integer stock,
+                                                  @NotNull @Min(0) BigDecimal price,
                                                   @NotBlank String desc,
                                                   @NotBlank String mainImageUrl,
-                                                  @NotEmpty List<String> detailImageList) {
-        return carModelService.updateCarModelById(carModelId, modelName, stock, desc, mainImageUrl, detailImageList);
+//                                                  @NotEmpty List<String> detailImageList) {
+                                                  @NotBlank String detailImageList) {
+        return carModelService.updateCarModelById(carModelId, modelName, stock, price, desc, mainImageUrl, detailImageList);
     }
 
 

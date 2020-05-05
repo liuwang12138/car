@@ -3,6 +3,7 @@ package com.godric.cms.common.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class CarModelDetailDTO {
     private String modelName;
 
     private Integer stock;
+
+    private BigDecimal price;
 
     private String desc;
 

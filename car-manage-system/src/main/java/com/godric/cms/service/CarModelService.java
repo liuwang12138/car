@@ -5,6 +5,7 @@ import com.godric.cms.common.dto.CarModelDetailDTO;
 import com.godric.cms.common.dto.PreOrderInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,12 +28,26 @@ public interface CarModelService {
      * insert car model info
      * @param modelName model name
      * @param stock stock
+     * @param price price
      * @param desc description
      * @param mainImageUrl main image url
      * @param detailImageList detail image list
      * @return whether insert success or not
      */
-    ResultMessage<Void> insertCarModel(String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList);
+    ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, List<String> detailImageList);
+
+
+    /**
+     * insert car model info
+     * @param modelName model name
+     * @param stock stock
+     * @param price price
+     * @param desc description
+     * @param mainImageUrl main image url
+     * @param detailImageList detail image list
+     * @return whether insert success or not
+     */
+    ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList);
 
     /**
      * get car model detail
@@ -80,11 +95,25 @@ public interface CarModelService {
      * @param carModelId car model id
      * @param modelName model name
      * @param stock stock
+     * @param price price
      * @param desc description
      * @param mainImageUrl main image url
      * @param detailImageList detail image list
      * @return whether update is success or not
      */
-    ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList);
+    ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, List<String> detailImageList);
+
+    /**
+     * update car model by id
+     * @param carModelId car model id
+     * @param modelName model name
+     * @param stock stock
+     * @param price price
+     * @param desc description
+     * @param mainImageUrl main image url
+     * @param detailImageList detail image list
+     * @return whether update is success or not
+     */
+    ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList);
 
 }

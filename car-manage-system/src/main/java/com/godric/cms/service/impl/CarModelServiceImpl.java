@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList) {
+    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, List<String> detailImageList) {
 
         QueryWrapper<CarModelPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("model_name", modelName);
@@ -80,6 +81,7 @@ public class CarModelServiceImpl implements CarModelService {
         CarModelPO po = CarModelPO.builder()
                             .modelName(modelName)
                             .stock(stock)
+                            .price(price)
                             .desc(desc)
                             .mainImageUrl(mainImageUrl)
                             .detailImageUrl(detailImageListUrl)
@@ -89,7 +91,30 @@ public class CarModelServiceImpl implements CarModelService {
         return ResultMessage.success("添加成功！");
     }
 
-    private String getDetailImageListUrl(List<String> detailImageList) {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList) {
+        QueryWrapper<CarModelPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("model_name", modelName);
+        List<CarModelPO> carModelPos = carModelDao.selectList(queryWrapper);
+        if (carModelPos != null && !carModelPos.isEmpty()) {
+            return ResultMessage.fail("已添加相同车型，请不要重复添加！");
+        }
+
+        CarModelPO po = CarModelPO.builder()
+                .modelName(modelName)
+                .stock(stock)
+                .price(price)
+                .desc(desc)
+                .mainImageUrl(mainImageUrl)
+                .detailImageUrl(detailImageList)
+                .build();
+        carModelDao.insert(po);
+
+        return ResultMessage.success("添加成功！");
+    }
+
+    public String getDetailImageListUrl(List<String> detailImageList) {
         StringBuilder detailImageUrl = new StringBuilder();
 
         // detail image list must not empty, so get(0) will not make null pointer exception
@@ -196,16 +221,22 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList) {
+    public ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, List<String> detailImageList) {
         String detailImageListUrl = getDetailImageListUrl(detailImageList);
+        return updateCarModelById(carModelId, modelName, stock, price, desc, mainImageUrl, detailImageListUrl);
+    }
+
+    @Override
+    public ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList) {
         CarModelPO po = CarModelPO.builder()
-                                    .id(carModelId)
-                                    .modelName(modelName)
-                                    .stock(stock)
-                                    .desc(desc)
-                                    .mainImageUrl(mainImageUrl)
-                                    .detailImageUrl(detailImageListUrl)
-                                    .build();
+                .id(carModelId)
+                .modelName(modelName)
+                .stock(stock)
+                .price(price)
+                .desc(desc)
+                .mainImageUrl(mainImageUrl)
+                .detailImageUrl(detailImageList)
+                .build();
 
         if (carModelDao.updateById(po) > 0) {
             return ResultMessage.success("更新成功");

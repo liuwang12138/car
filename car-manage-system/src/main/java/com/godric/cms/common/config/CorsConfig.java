@@ -45,9 +45,6 @@ public class CorsConfig {
 
         // 3. 返回新的CorsFilter
         return new CorsFilter(configSource);
-
-
-
     }
 
 }

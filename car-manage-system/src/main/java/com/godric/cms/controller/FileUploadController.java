@@ -35,7 +35,7 @@ public class FileUploadController {
      * @return image url
      */
     @PostMapping("upload")
-    public ResultMessage<FileUploadRespInfoDTO> fileUpload(@NotNull @RequestParam MultipartFile multipartFile,
+    public ResultMessage<FileUploadRespInfoDTO> fileUpload(@NotNull @RequestParam("multipartFile") MultipartFile multipartFile,
                                                            HttpServletRequest request) {
         log.info("you have in the fileUpload method....");
         if(multipartFile.isEmpty()){

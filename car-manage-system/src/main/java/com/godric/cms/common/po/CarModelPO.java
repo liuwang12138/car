@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Tolerate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -28,6 +29,9 @@ public class CarModelPO {
 
     @TableField("stock")
     private Integer stock;
+
+    @TableField("price")
+    private BigDecimal price;
 
     @TableField("main_image_url")
     private String mainImageUrl;

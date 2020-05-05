@@ -27,27 +27,27 @@
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="modelName" label="车型"></el-table-column>
                 <el-table-column prop="stock" label="库存量" align="center"></el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
+                <el-table-column prop="mainImageUrl" label="封面" align="center">
                     <template slot-scope="scope">
                         <el-image
                             class="table-td-thumb"
-                            :src="scope.row.thumb"
+                            :src="scope.row.mainImageUrl"
                             :preview-src-list="[scope.row.thumb]"
                         ></el-image>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button
+                        <!-- <el-button
                             type="text"
                             icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
+                        >编辑</el-button> -->
                         <el-button
                             type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="handleDelete(scope.row)"
                         >删除</el-button>
                     </template>
                 </el-table-column>
@@ -70,13 +70,55 @@
                     <el-input v-model="addForm.modelName"></el-input>
                 </el-form-item>
                 <el-form-item label="库存量">
-                    <el-input type="password" v-model="addForm.stock"></el-input>
+                    <el-input v-model="addForm.stock"></el-input>
+                </el-form-item>
+                <el-form-item label="价格">
+                    <el-input v-model="addForm.price"></el-input>
+                </el-form-item>
+                <el-form-item label="描述">
+                    <el-input v-model="addForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item label="主图片">
-                    <el-input v-model="addForm.mainImageUrl"></el-input>
+                    <el-upload
+                        :action="url"
+                        list-type="picture-card"
+                        :limit="1"
+                        accept="jpg, png"
+                        :file-list="fileList"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :before-upload="beforeImageUpload"
+                        name="multipartFile"
+                        :on-success="mainImageSuccess"
+                        :on-exceed="imageExceed"
+                        :auto-upload="true"
+                    >
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt />
+                    </el-dialog>
                 </el-form-item>
                 <el-form-item label="详情图片">
-                    <el-input v-model="addForm.detailImageList"></el-input>
+                    <el-upload
+                        :action="url"
+                        list-type="picture-card"
+                        :limit="9"
+                        accept="jpg, png"
+                        :file-list="fileList"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :before-upload="beforeImageUpload"
+                        name="multipartFile"
+                        :on-success="detailImageSuccess"
+                        :on-exceed="imageExceed"
+                        :auto-upload="true"
+                    >
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt />
+                    </el-dialog>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -103,15 +145,17 @@
 </template>
 
 <script>
-import { carModel } from '../../api/index';
+import { baseUrl, carModel, uploadFile, carModelInsert, carModelDel } from '../../api/index';
 export default {
     name: 'basetable',
+    inject:['reload'],
     data() {
         return {
+            url: baseUrl + 'file/upload/',
             query: {
                 modelName: '',
                 pageNum: 1,
-                pageSize: 2
+                pageSize: 10
             },
             tableData: [],
             addVisible: false,
@@ -119,6 +163,14 @@ export default {
             pageTotal: 0,
             editForm: {},
             addForm: {},
+
+            // upload image
+            fileList: [],
+            dialogImageUrl: "",
+            dialogVisible: false,
+            mailImageFileUrl: "",
+            //detailImageFileList: [],
+            detailImageFileList: "",
         };
     },
     created() {
@@ -140,7 +192,24 @@ export default {
             });
         },
         addCar() {
-            console.log(1);
+            this.addForm.mainImageUrl = this.mailImageFileUrl
+            this.addForm.detailImageList = this.detailImageFileList
+            console.log(this.addForm)
+            carModelInsert(this.addForm).then(res => {
+                console.log()
+                if(res.data.code == 201) {
+                    this.$message.success("插入成功！")
+                } else if (res.data.code == 203) {
+                    this.$message.error("您没有登陆，请先登陆！")
+                } else {
+                    this.$message.error(res.data.message)
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
+        saveEdit() {
+
         },
         // 触发搜索按钮
         handleSearch() {
@@ -148,47 +217,86 @@ export default {
             this.getData();
         },
         // 删除操作
-        handleDelete(index, row) {
+        handleDelete(row) {
             // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
                 type: 'warning'
-            })
-                .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
-                })
-                .catch(() => {});
-        },
-        // 多选操作
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-        },
-        delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
-        },
-        // 编辑操作
-        handleEdit(index, row) {
-            this.idx = index;
-            this.form = row;
-            this.editVisible = true;
-        },
-        // 保存编辑
-        saveEdit() {
-            this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
+            }).then(() => {
+                carModelDel({carModelId: row.id}).then(res => {
+                    if(res.data.code == 201) {
+                        console.log(res);
+                        this.$message.success("删除成功");
+                        this.reload();
+                    } else {
+                        this.$message.error("删除失败");
+                    }
+                }).catch((err) => {
+                    this.$message.error("删除失败");
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
         },
         // 分页导航
         handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
+            this.$set(this.query, 'pageNum', val);
             this.getData();
+        },
+
+
+        // upload image
+        //图片上传之前
+        beforeImageUpload(file, fileList) {
+            console.log(file)
+            var testmsg=file.name.substring(file.name.lastIndexOf('.')+1) 
+            const isJpg = testmsg === 'jpg' || testmsg === 'png'
+            if (!isJpg) {
+                this.$message.error('上传图片只能是 jpg 或 png 格式!')
+                return false
+            }
+            const isLt2M = file.size / 1024 / 1024 < 2
+            if (!isLt2M) {
+                this.$message.error('上传图片大小不能超过 2MB!')
+                return false
+            }
+            // return false // (返回false不会自动上传)
+        },
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url
+            this.dialogVisible = true
+        },
+        handleRemove(file, fileList) {
+            for(var i = 0; i < this.fileList.length; i++){
+                if(this.fileList[i].url === file.url){
+                deleteImageReport(this.fileList[i].id).then(res =>{
+                    this.$message.success('删除图片成功')
+                })
+                this.fileList.splice(i, 1)
+                }
+            }
+        },
+        mainImageSuccess(file) {
+            if (file.code == 201) {
+                this.mailImageFileUrl = file.data.imageUrl
+            } else {
+                this.$message.error('上传失败')
+            }
+        },
+        detailImageSuccess(file) {
+            if (file.code == 201) {
+                let img = file.data.imageUrl
+                this.detailImageFileList += (img + ",")
+            } else {
+                this.$message.error('上传失败')
+            }
+        },
+        imageExceed() {
+            this.$message.error("图片数量达到上限！")
         },
     }
 };
