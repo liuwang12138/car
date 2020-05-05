@@ -189,7 +189,7 @@ export default {
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
-        }
+        },
     }
 };
 </script>

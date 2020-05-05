@@ -66,7 +66,7 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, String mainImageUrl, List<String> detailImageList) {
+    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList) {
 
         QueryWrapper<CarModelPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("model_name", modelName);
@@ -75,6 +75,21 @@ public class CarModelServiceImpl implements CarModelService {
             return ResultMessage.fail("已添加相同车型，请不要重复添加！");
         }
 
+        String detailImageListUrl = getDetailImageListUrl(detailImageList);
+
+        CarModelPO po = CarModelPO.builder()
+                            .modelName(modelName)
+                            .stock(stock)
+                            .desc(desc)
+                            .mainImageUrl(mainImageUrl)
+                            .detailImageUrl(detailImageListUrl)
+                            .build();
+        carModelDao.insert(po);
+
+        return ResultMessage.success("添加成功！");
+    }
+
+    private String getDetailImageListUrl(List<String> detailImageList) {
         StringBuilder detailImageUrl = new StringBuilder();
 
         // detail image list must not empty, so get(0) will not make null pointer exception
@@ -83,16 +98,7 @@ public class CarModelServiceImpl implements CarModelService {
             detailImageUrl.append(",").append(detailImageList.get(i));
         }
 
-
-        CarModelPO po = CarModelPO.builder()
-                                    .modelName(modelName)
-                                    .stock(stock)
-                                    .mainImageUrl(mainImageUrl)
-                                    .detailImageUrl(detailImageUrl.toString())
-                                    .build();
-        carModelDao.insert(po);
-
-        return ResultMessage.success("添加成功！");
+        return detailImageUrl.toString();
     }
 
     @Override
@@ -179,5 +185,31 @@ public class CarModelServiceImpl implements CarModelService {
         List<PreOrderInfoDTO> preOrderInfoList = preOrderRecordDao.getPreOrderInfo(userId, startTime, endTime, startNum, pageSize);
         Integer count = preOrderRecordDao.countPreOrderInfo(userId, startTime, endTime);
         return ResultMessage.success(preOrderInfoList, count);
+    }
+
+    @Override
+    public ResultMessage<Void> delCarModelById(Integer carModelId) {
+        if (carModelDao.deleteById(carModelId) > 0) {
+            return ResultMessage.success("删除成功");
+        }
+        return ResultMessage.fail("未找到id对应的车型记录");
+    }
+
+    @Override
+    public ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList) {
+        String detailImageListUrl = getDetailImageListUrl(detailImageList);
+        CarModelPO po = CarModelPO.builder()
+                                    .id(carModelId)
+                                    .modelName(modelName)
+                                    .stock(stock)
+                                    .desc(desc)
+                                    .mainImageUrl(mainImageUrl)
+                                    .detailImageUrl(detailImageListUrl)
+                                    .build();
+
+        if (carModelDao.updateById(po) > 0) {
+            return ResultMessage.success("更新成功");
+        }
+        return ResultMessage.fail("根据id找不到车型记录");
     }
 }

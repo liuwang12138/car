@@ -27,11 +27,12 @@ public interface CarModelService {
      * insert car model info
      * @param modelName model name
      * @param stock stock
+     * @param desc description
      * @param mainImageUrl main image url
      * @param detailImageList detail image list
      * @return whether insert success or not
      */
-    ResultMessage<Void> insertCarModel(String modelName, Integer stock, String mainImageUrl, List<String> detailImageList);
+    ResultMessage<Void> insertCarModel(String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList);
 
     /**
      * get car model detail
@@ -66,4 +67,24 @@ public interface CarModelService {
      * @return pre order info
      */
     ResultMessage<List<PreOrderInfoDTO>> getPreOrderInfo(Integer userId, LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize);
+
+    /**
+     * delete car model info by id
+     * @param carModelId car model id
+     * @return whether delete is success or not
+     */
+    ResultMessage<Void> delCarModelById(Integer carModelId);
+
+    /**
+     * update car model by id
+     * @param carModelId car model id
+     * @param modelName model name
+     * @param stock stock
+     * @param desc description
+     * @param mainImageUrl main image url
+     * @param detailImageList detail image list
+     * @return whether update is success or not
+     */
+    ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, String desc, String mainImageUrl, List<String> detailImageList);
+
 }

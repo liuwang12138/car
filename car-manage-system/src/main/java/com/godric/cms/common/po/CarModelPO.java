@@ -32,6 +32,9 @@ public class CarModelPO {
     @TableField("main_image_url")
     private String mainImageUrl;
 
+    @TableField("`desc`")
+    private String desc;
+
     @TableField("detail_image_url")
     private String detailImageUrl;
 

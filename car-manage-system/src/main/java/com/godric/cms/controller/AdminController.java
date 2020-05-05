@@ -1,23 +1,23 @@
 package com.godric.cms.controller;
 
 import com.godric.cms.common.constants.CmsConstants;
+import com.godric.cms.common.dto.CarModelDTO;
 import com.godric.cms.common.dto.PreOrderInfoDTO;
 import com.godric.cms.common.dto.ResultMessage;
 import com.godric.cms.common.dto.UserDTO;
+import com.godric.cms.common.po.CarModelPO;
 import com.godric.cms.common.po.UserPO;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -67,8 +67,8 @@ public class AdminController extends BaseController {
      */
     @PostMapping("user/list")
     public ResultMessage<List<UserDTO>> getUserList(String username,
-                                                    LocalDateTime startTime,
-                                                    LocalDateTime endTime,
+                                                    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
+                                                    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
                                                     Integer pageNum,
                                                     Integer pageSize) {
         return userService.getUserList(username, startTime, endTime, pageNum, pageSize);
@@ -112,11 +112,20 @@ public class AdminController extends BaseController {
 
     /**
      * admin update user info
-     * @param po user po
+     * @param id user id
+     * @param username username
+     * @param password password
+     * @param realName realName
+     * @param phone phone
      * @return whether update is success or not
      */
     @PostMapping("user/update/info")
-    public ResultMessage<Void> updateUserInfo(@RequestBody @Validated UserPO po) {
+    public ResultMessage<Void> updateUserInfo(@NotNull Integer id,
+                                              @NotNull String username,
+                                              @NotNull String password,
+                                              @NotNull String realName,
+                                              @NotNull String phone) {
+        UserPO po = UserPO.builder().id(id).username(username).password(password).realName(realName).phone(phone).build();
         return userService.updateUserInfo(po);
     }
 
@@ -129,22 +138,37 @@ public class AdminController extends BaseController {
      * @param detailImageList detail image list
      * @return whether insert is success or not
      */
-    @PostMapping("insert")
+    @PostMapping("carModel/insert")
     public ResultMessage<Void> insertCarModel(@NotBlank String modelName,
                                               @NotNull @Min(1) Integer stock,
+                                              @NotBlank String desc,
                                               @NotBlank String mainImageUrl,
                                               @NotEmpty List<String> detailImageList) {
-        return carModelService.insertCarModel(modelName, stock, mainImageUrl, detailImageList);
+        return carModelService.insertCarModel(modelName, stock, desc, mainImageUrl, detailImageList);
+    }
+
+    @PostMapping("carModel/delete/by/id")
+    public ResultMessage<Void> delCarModelById(@NotNull Integer carModelId) {
+        return carModelService.delCarModelById(carModelId);
+    }
+
+    @PostMapping("carModel/update/by/id")
+    public ResultMessage<Void> updateCarModelById(@NotNull Integer carModelId,
+                                                  @NotBlank String modelName,
+                                                  @NotNull Integer stock,
+                                                  @NotBlank String desc,
+                                                  @NotBlank String mainImageUrl,
+                                                  @NotEmpty List<String> detailImageList) {
+        return carModelService.updateCarModelById(carModelId, modelName, stock, desc, mainImageUrl, detailImageList);
     }
 
 
     @PostMapping("order/record/list")
-    public ResultMessage<List<PreOrderInfoDTO>> getOrderRecordList(LocalDateTime startTime,
-                                                                   LocalDateTime endTime,
+    public ResultMessage<List<PreOrderInfoDTO>> getOrderRecordList(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
+                                                                   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
                                                                    Integer pageNum,
                                                                    Integer pageSize) {
         return carModelService.getPreOrderInfo(null, startTime, endTime, pageNum, pageSize);
     }
-
 
 }

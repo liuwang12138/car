@@ -1,7 +1,9 @@
 package com.godric.cms.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -14,6 +16,13 @@ public class CarModelDetailDTO {
 
     private Integer stock;
 
+    private String desc;
+
+    private String mainImageUrl;
+
     private List<String> imageList;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private LocalDateTime createTime;
 
 }

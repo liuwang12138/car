@@ -16,6 +16,7 @@ public class ResultMessage<T> implements Serializable {
     private Integer count;
 
     public static final int SUCCESS_CODE = 201;
+    public static final int REFUSE_CODE = 203;
     public static final int FAIL_CODE = 205;
 
     public static ResultMessage<Void> success() {
@@ -51,6 +52,19 @@ public class ResultMessage<T> implements Serializable {
         resultMessage.code = SUCCESS_CODE;
         resultMessage.message = message;
         resultMessage.data = data;
+        return resultMessage;
+    }
+
+    public static<T> ResultMessage<T> refuse() {
+        ResultMessage<T> resultMessage = new ResultMessage<>();
+        resultMessage.code = REFUSE_CODE;
+        return resultMessage;
+    }
+
+    public static<T> ResultMessage<T> refuse(String message) {
+        ResultMessage<T> resultMessage = new ResultMessage<>();
+        resultMessage.code = REFUSE_CODE;
+        resultMessage.message = message;
         return resultMessage;
     }
 

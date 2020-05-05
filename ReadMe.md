@@ -60,13 +60,13 @@ super admin   写死
   
 ### 项目信息
 
-| key              | value         |
-| ---------------- | ------------- |
-| IDE              | Intellij IDEA |
-| 后端开发语言     | java          |
-| 后端开发框架     | springBoot    |
-| 前端开发框架     | vue           |
-| 数据库           | mysql         |
-| 数据库可视化工具 | navicat       |
-| 依赖管理工具     | maven         |
+| key              | value                   |
+| ---------------- | ----------------------- |
+| IDE              | Intellij IDEA + VS Code |
+| 后端开发语言     | java                    |
+| 后端开发框架     | springBoot              |
+| 前端开发框架     | vue                     |
+| 数据库           | mysql                   |
+| 数据库可视化工具 | navicat                 |
+| 依赖管理工具     | maven                   |
 
