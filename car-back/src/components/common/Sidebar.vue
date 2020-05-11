@@ -71,6 +71,11 @@ export default {
                     index: 'userManage',
                     title: '客户管理'
                 },
+                {
+                    icon: 'el-icon-suitcase-1',
+                    index: 'afterSaleService',
+                    title: '售后记录'
+                }
             ]
         };
     },

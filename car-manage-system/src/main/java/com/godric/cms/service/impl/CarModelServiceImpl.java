@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.godric.cms.common.dto.CarModelDTO;
-import com.godric.cms.common.dto.CarModelDetailDTO;
-import com.godric.cms.common.dto.PreOrderInfoDTO;
-import com.godric.cms.common.dto.ResultMessage;
+import com.godric.cms.common.dto.*;
+import com.godric.cms.common.po.AfterSaleServicePO;
 import com.godric.cms.common.po.CarModelPO;
 import com.godric.cms.common.po.PreOrderRecordPO;
 import com.godric.cms.common.po.UserPO;
+import com.godric.cms.dao.AfterSaleServiceDao;
 import com.godric.cms.dao.CarModelDao;
 import com.godric.cms.dao.PreOrderRecordDao;
 import com.godric.cms.service.CarModelService;
@@ -40,8 +39,21 @@ public class CarModelServiceImpl implements CarModelService {
     @Autowired
     PreOrderRecordDao preOrderRecordDao;
 
+    @Autowired
+    AfterSaleServiceDao afterSaleServiceDao;
+
     @Override
-    public ResultMessage<List<CarModelDTO>> getCarModelList(String modelName, Integer pageNum, Integer pageSize) {
+    public ResultMessage<List<CarModelDTO>> getCarModelList(String modelName,
+                                                            Integer minCarLength,
+                                                            Integer maxCarLength,
+                                                            Integer minCarWidth,
+                                                            Integer maxCarWidth,
+                                                            Integer minCarHeight,
+                                                            Integer maxCarHeight,
+                                                            Integer minWheelBase,
+                                                            Integer maxWheelBase,
+                                                            Integer pageNum,
+                                                            Integer pageSize) {
 
         IPage<CarModelPO> carModelPage;
         if (pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0) {
@@ -52,6 +64,30 @@ public class CarModelServiceImpl implements CarModelService {
         QueryWrapper<CarModelPO> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(modelName)) {
             queryWrapper.like("model_name", modelName);
+        }
+        if (Objects.nonNull(minCarLength)) {
+            queryWrapper.gt("car_length", minCarLength);
+        }
+        if (Objects.nonNull(maxCarLength)) {
+            queryWrapper.lt("car_length", maxCarLength);
+        }
+        if (Objects.nonNull(minCarWidth)) {
+            queryWrapper.gt("car_width", minCarWidth);
+        }
+        if (Objects.nonNull(maxCarWidth)) {
+            queryWrapper.lt("car_width", maxCarWidth);
+        }
+        if (Objects.nonNull(minCarHeight)) {
+            queryWrapper.gt("car_height", minCarHeight);
+        }
+        if (Objects.nonNull(maxCarHeight)) {
+            queryWrapper.lt("car_height", maxCarHeight);
+        }
+        if (Objects.nonNull(minWheelBase)) {
+            queryWrapper.gt("wheel_base", minWheelBase);
+        }
+        if (Objects.nonNull(maxWheelBase)) {
+            queryWrapper.lt("wheel_base", maxWheelBase);
         }
 
         IPage<CarModelPO> carModels = carModelDao.selectPage(carModelPage, queryWrapper);
@@ -93,7 +129,9 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList) {
+    public ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList,
+                                              Integer carLength, Integer carWidth, Integer carHeight, Integer wheelBase, Integer displacement, BigDecimal accelerationTime,
+                                              BigDecimal oilConsumption, BigDecimal fuelTankCapacity) {
         QueryWrapper<CarModelPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("model_name", modelName);
         List<CarModelPO> carModelPos = carModelDao.selectList(queryWrapper);
@@ -108,6 +146,8 @@ public class CarModelServiceImpl implements CarModelService {
                 .desc(desc)
                 .mainImageUrl(mainImageUrl)
                 .detailImageUrl(detailImageList)
+                .carLength(carLength).carWidth(carWidth).carHeight(carHeight).wheelBase(wheelBase)
+                .displacement(displacement).accelerationTime(accelerationTime).oilConsumption(oilConsumption).fuelTankCapacity(fuelTankCapacity)
                 .build();
         carModelDao.insert(po);
 
@@ -144,7 +184,7 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultMessage<Void> preOrderCarModel(Integer carModelId, Integer userId) {
+    public ResultMessage<Void> preOrderCarModel(Integer carModelId, Integer userId, String fullName, String phone, String email) {
         QueryWrapper<PreOrderRecordPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("car_model_id", carModelId);
         queryWrapper.eq("user_id", userId);
@@ -165,7 +205,11 @@ public class CarModelServiceImpl implements CarModelService {
 
         PreOrderRecordPO po = PreOrderRecordPO.builder()
                                               .carModelId(carModelId)
-                                              .userId(userId).build();
+                                              .userId(userId)
+                                              .fullName(fullName)
+                                              .phone(phone)
+                                              .email(email)
+                                              .build();
 
         preOrderRecordDao.insert(po);
 
@@ -242,5 +286,36 @@ public class CarModelServiceImpl implements CarModelService {
             return ResultMessage.success("更新成功");
         }
         return ResultMessage.fail("根据id找不到车型记录");
+    }
+
+    @Override
+    public ResultMessage<Void> insertAfterSaleService(Integer preOrderId, String fullName, String phone, String email, String serviceContent) {
+        PreOrderRecordPO preOrderRecord = preOrderRecordDao.selectById(preOrderId);
+        if (Objects.isNull(preOrderRecord)) {
+            return ResultMessage.fail("没有找到对应的预约记录！");
+        }
+        AfterSaleServicePO po = AfterSaleServicePO.builder()
+                                                .preOrderId(preOrderId)
+                                                .fullName(fullName)
+                                                .phone(phone)
+                                                .email(email)
+                                                .serviceContent(serviceContent)
+                                                .build();
+
+        afterSaleServiceDao.insert(po);
+        return ResultMessage.success("新增成功！");
+    }
+
+    @Override
+    public ResultMessage<List<AfterSaleServiceDTO>> getAfterSaleServiceList(LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize) {
+        Integer startNum = null;
+        if (pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0) {
+            startNum = (pageNum - 1) * pageSize;
+        }
+
+        List<AfterSaleServiceDTO> afterSaleServiceList = afterSaleServiceDao.getAfterSaleServiceList(startTime, endTime, startNum, pageSize);
+        int count = afterSaleServiceDao.countAfterSaleServiceList(startTime, endTime);
+
+        return ResultMessage.success(afterSaleServiceList, count);
     }
 }

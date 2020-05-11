@@ -19,8 +19,8 @@ public class ResultMessage<T> implements Serializable {
     public static final int REFUSE_CODE = 203;
     public static final int FAIL_CODE = 205;
 
-    public static ResultMessage<Void> success() {
-        ResultMessage<Void> resultMessage = new ResultMessage<>();
+    public static<T> ResultMessage<T> success() {
+        ResultMessage<T> resultMessage = new ResultMessage<>();
         resultMessage.code = SUCCESS_CODE;
         return resultMessage;
     }

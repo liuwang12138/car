@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Tolerate;
 
 import java.time.LocalDateTime;
@@ -15,38 +14,32 @@ import java.time.LocalDateTime;
 /**
  * @author Godric
  */
+
 @Data
 @Builder
-@TableName("pre_order_record")
-public class PreOrderRecordPO {
+@TableName("after_sale_service")
+public class AfterSaleServicePO {
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
-    @TableField(value = "car_model_id")
-    private Integer carModelId;
+    private Integer preOrderId;
 
-    @TableField(value = "user_id")
-    private Integer userId;
-
-    @TableField(value = "full_name")
     private String fullName;
 
-    @TableField(value = "phone")
     private String phone;
 
-    @TableField(value = "email")
     private String email;
 
-    @TableField("create_time")
+    private String serviceContent;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    @TableField("update_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 
     @Tolerate
-    public PreOrderRecordPO() {}
+    public AfterSaleServicePO() {}
 
 }

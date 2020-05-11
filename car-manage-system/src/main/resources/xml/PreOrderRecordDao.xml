@@ -10,6 +10,9 @@
             p.`id` as preOrderId,
             c.`model_name` as carModelName,
             u.`username` as username,
+            p.`full_name` as fullName,
+            p.`phone` as phone,
+            p.`email` as email,
             p.`create_time` as preOrderTime
         from `pre_order_record` p
         left join `car_model` c on p.`car_model_id` = c.`id`

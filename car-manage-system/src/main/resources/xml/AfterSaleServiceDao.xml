@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.godric.cms.dao.AfterSaleServiceDao">
+
+    <select id="getAfterSaleServiceList" resultType="com.godric.cms.common.dto.AfterSaleServiceDTO">
+        select
+            a.`id`,
+            u.`username`,
+            c.`model_name`,
+            a.`full_name`,
+            a.`phone`,
+            a.`email`,
+            a.`service_content`,
+            a.`create_time`
+        from `after_sale_service` a
+        left join `pre_order_record` p on a.`pre_order_id` = p.`id`
+        left join `user` u on u.`id` = p.`user_id`
+        left join `car_model` c on p.`car_model_id` = c.`id`
+        <include refid="afterServiceQueryCondition" />
+        <if test="startNum != null and startNum >=0 and pageSize != null and pageSize > 0">
+            limit #{startNum}, #{pageSize}
+        </if>
+    </select>
+    <select id="countAfterSaleServiceList" resultType="java.lang.Integer">
+        select
+            count(1)
+        from `after_sale_service` a
+        <include refid="afterServiceQueryCondition" />
+    </select>
+    
+    <sql id="afterServiceQueryCondition">
+        <where>
+            <if test="startTime != null">
+                a.`create_time` &gt; #{startTime}
+            </if>
+            <if test="endTime != null">
+                a.`create_time` &lt; #{endTime}
+            </if>
+        </where>
+    </sql>
+</mapper>

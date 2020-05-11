@@ -97,3 +97,33 @@ INSERT INTO `user` VALUES (10, '22', '222222', '2222', '22222222', '2020-05-04 2
 INSERT INTO `user` VALUES (11, '33', '333333', '3333', '33333333', '2020-05-04 22:43:43', '2020-05-04 22:43:43');
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+alter table `car_model`
+add column `car_length` int(5) not null comment '车长(毫米)' after `detail_image_url`,
+add column `car_width` int(5) not null comment '车宽(毫米)' after `car_length`,
+add column `car_height` int(5) not null comment '车高(毫米)' after `car_width`,
+add column `wheel_base` int(5) not null comment '轴距(毫米)' after `car_height`,
+add column `displacement` int(5) not null comment '排量(毫升)' after `wheel_base`,
+add column `acceleration_time` decimal(5, 2) not null comment '0-100公里/小时的时间(秒)' after `displacement`,
+add column `oil_consumption` decimal(5, 2) not null comment '综合耗油量(升/100公里)' after `acceleration_time`,
+add column `fuel_tank_capacity` decimal(5, 2) not null comment '邮箱容积(升)' after `oil_consumption`;
+
+alter table `pre_order_record`
+add column `full_name` varchar(50) not null comment '用户全名' after `user_id`,
+add column `phone` varchar(20) not null comment '手机号' after `full_name`,
+add column `email` varchar(50) default null comment '邮箱' after `phone`;
+
+drop table if exists `after_sale_service`;
+create table `after_sale_service`(
+    `id` int(11) not null auto_increment comment '唯一主键',
+    `user_id` int(11) not null comment '用户id',
+    `car_model_id` int(11) not null comment '车型id',
+    `full_name` varchar(30) not null comment '客户姓名',
+    `phone` varchar(20) not null comment '客户电话',
+    `email` varchar(50) default null comment '邮箱',
+    `service_content` mediumtext not null comment '售后内容',
+    `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+    primary key (`id`) using btree
+);
+

@@ -20,6 +20,10 @@
                             type="text"
                             @click="cancel(scope.row)"
                         >取消预订</el-button>
+                        <el-button
+                            type="text"
+                            @click="makeAfterSaleVisible(scope.row)"
+                        >申请售后</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -48,13 +52,34 @@
                 <el-button type="primary" @click="update">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 申请售后弹出框 -->
+        <el-dialog title="申请售后" :visible.sync="applyAfterSaleVisible" width="30%">
+            <el-form ref="applyAfterSaleForm" :model="applyAfterSaleForm" label-width="90px">
+                <el-form-item label="*客户姓名">
+                    <el-input v-model="applyAfterSaleForm.fullName"></el-input>
+                </el-form-item>
+                <el-form-item label="*联系方式">
+                    <el-input v-model="applyAfterSaleForm.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="电子邮件">
+                    <el-input v-model="applyAfterSaleForm.email"></el-input>
+                </el-form-item>
+                <el-form-item label="*申请内容">
+                    <el-input type="textarea" :rows="5" v-model="applyAfterSaleForm.serviceContent"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="apply()">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import cMenu from "@/components/Menu"
 import cFooter from "@/components/Footer"
-import { myInfo, updatePassword, getMyPreOrderInfo, cancelPreOrder } from '../api/index';
+import { myInfo, updatePassword, getMyPreOrderInfo, cancelPreOrder, insertAfterSaleService } from '../api/index';
 export default {
     name: "Mine",
     data() {
@@ -69,7 +94,10 @@ export default {
                 pageSize: 5
             },
             tableData: [],
-            pageTotal: 0
+            pageTotal: 0,
+            applyAfterSaleForm: {},
+            applyAfterSaleVisible: false,
+            rowIdApply: ''
         }
     },
     components: {
@@ -142,10 +170,35 @@ export default {
                 console.log(err);
             });
         },
+        apply() {
+            if (this.applyAfterSaleForm.fullName == null) {
+                alert("客户姓名为空")
+            } else if (this.applyAfterSaleForm.phone == null) {
+                alert("联系方式为空")
+            } else if (this.applyAfterSaleForm.serviceContent == null) {
+                alert("申请内容为空")
+            }
+            this.applyAfterSaleForm.preOrderId = this.rowIdApply
+            insertAfterSaleService(this.applyAfterSaleForm).then(res => {
+                console.log(res)
+                if(res.data.code == 201) {
+                    this.applyAfterSaleVisible = false
+                    this.$message.success('申请成功！')
+                } else {
+                    this.$message.success(res.data.message)
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
         // 分页导航
         handlePageChange(val) {
             this.$set(this.params, 'pageNum', val);
             this.getMyPreOrder();
+        },
+        makeAfterSaleVisible(row) {
+            this.applyAfterSaleVisible=true
+            this.rowIdApply = row.preOrderId
         }
     }
 }

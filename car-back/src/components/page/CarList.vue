@@ -27,6 +27,14 @@
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="modelName" label="车型"></el-table-column>
                 <el-table-column prop="stock" label="库存量" align="center"></el-table-column>
+                <el-table-column prop="carLength" label="车长(毫米)" align="center"></el-table-column>
+                <el-table-column prop="carWidth" label="车宽(毫米)" align="center"></el-table-column>
+                <el-table-column prop="carHeight" label="车高(毫米)" align="center"></el-table-column>
+                <el-table-column prop="wheelBase" label="轴距(毫米)" align="center"></el-table-column>
+                <el-table-column prop="displacement" label="排量(毫升)" align="center"></el-table-column>
+                <el-table-column prop="accelerationTime" label="0-100公里/小时的加速时间/秒" align="center"></el-table-column>
+                <el-table-column prop="oilConsumption" label="综合耗油量(升/公里)" align="center"></el-table-column>
+                <el-table-column prop="fuelTankCapacity" label="油箱容积(升)" align="center"></el-table-column>
                 <el-table-column prop="mainImageUrl" label="封面" align="center">
                     <template slot-scope="scope">
                         <el-image
@@ -77,6 +85,30 @@
                 </el-form-item>
                 <el-form-item label="描述">
                     <el-input v-model="addForm.desc"></el-input>
+                </el-form-item>
+                <el-form-item label="车长(毫米)">
+                    <el-input v-model="addForm.carLength"></el-input>
+                </el-form-item>
+                <el-form-item label="车宽(毫米)">
+                    <el-input v-model="addForm.carWidth"></el-input>
+                </el-form-item>
+                <el-form-item label="车高(毫米)">
+                    <el-input v-model="addForm.carHeight"></el-input>
+                </el-form-item>
+                <el-form-item label="轴距(毫米)">
+                    <el-input v-model="addForm.wheelBase"></el-input>
+                </el-form-item>
+                <el-form-item label="排量(毫升)">
+                    <el-input v-model="addForm.displacement"></el-input>
+                </el-form-item>
+                <el-form-item label="0-100公里加速时间(秒)">
+                    <el-input v-model="addForm.accelerationTime"></el-input>
+                </el-form-item>
+                <el-form-item label="综合耗油量(升/公里)">
+                    <el-input v-model="addForm.oilConsumption"></el-input>
+                </el-form-item>
+                <el-form-item label="油箱容积(升)">
+                    <el-input v-model="addForm.fuelTankCapacity"></el-input>
                 </el-form-item>
                 <el-form-item label="主图片">
                     <el-upload

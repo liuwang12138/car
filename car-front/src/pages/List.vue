@@ -3,8 +3,50 @@
         <c-menu></c-menu>
         <h2 class="h2">车型列表</h2>
         <div class="handle-box">
-            <el-input v-model="query.modelName" placeholder="车型" class="handle-select mr10"></el-input>
-            <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
+            <el-form :inline="true" :model="query" class="demo-form-inline">
+                <el-row>
+                    <el-col :span="7">
+                        <el-form-item label="车型">
+                            <el-input v-model="query.modelName" placeholder="车型"  class="handle-select mr10"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="7">
+                        <el-form-item label="车长(毫米)">
+                                <el-input v-model="query.minCarLength" class="handle-select mr10"></el-input>
+                                ~
+                                <el-input v-model="query.maxCarLength" class="handle-select mr10"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="7">
+                        <el-form-item label="车宽(毫米)">
+                                <el-input v-model="query.minCarWidth" class="handle-select mr10"></el-input>
+                                ~
+                                <el-input v-model="query.maxCarWidth" class="handle-select mr10"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="7">
+                        <el-form-item label="车高(毫米)">
+                                <el-input v-model="query.minCarHeight" class="handle-select mr10"></el-input>
+                                ~
+                                <el-input v-model="query.maxCarHeight" class="handle-select mr10"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="7">
+                        <el-form-item label="轴距(毫米)">
+                                <el-input v-model="query.minWheelBase" class="handle-select mr10"></el-input>
+                                ~
+                                <el-input v-model="query.maxWheelBase" class="handle-select mr10"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="7">
+                        <el-form-item>
+                            <el-button type="primary" @click="getData">查询</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </div>
         <c-carList :car="car"></c-carList>
         <el-pagination
@@ -31,6 +73,14 @@ export default {
             car: [],
             query: {
                 modelName: '',
+                minCarLength: '',
+                maxCarLength: '',
+                minCarWidth: '',
+                maxCarWidth: '',
+                minCarHeight: '',
+                maxCarHeight: '',
+                minWheelBase: '',
+                maxWheelBase: '',
                 pageNum: 1,
                 pageSize: 5
             },

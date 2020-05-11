@@ -1,17 +1,17 @@
-//package com.godric.cms.common.config;
-//
-//import com.godric.cms.common.interceptor.AdminLoginInterceptor;
-//import com.godric.cms.common.interceptor.UserLoginInterceptor;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-//import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-///**
-// * @author Godric
-// */
+package com.godric.cms.common.config;
+
+import com.godric.cms.common.interceptor.AdminLoginInterceptor;
+import com.godric.cms.common.interceptor.UserLoginInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Godric
+ */
 //@Configuration
 //public class InterceptorConfig extends WebMvcConfigurationSupport {
 //

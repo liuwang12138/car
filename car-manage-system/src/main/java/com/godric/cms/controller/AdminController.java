@@ -1,10 +1,7 @@
 package com.godric.cms.controller;
 
 import com.godric.cms.common.constants.CmsConstants;
-import com.godric.cms.common.dto.CarModelDTO;
-import com.godric.cms.common.dto.PreOrderInfoDTO;
-import com.godric.cms.common.dto.ResultMessage;
-import com.godric.cms.common.dto.UserDTO;
+import com.godric.cms.common.dto.*;
 import com.godric.cms.common.po.CarModelPO;
 import com.godric.cms.common.po.UserPO;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -148,8 +145,17 @@ public class AdminController extends BaseController {
                                               @NotBlank String desc,
                                               @NotBlank String mainImageUrl,
                                               //@NotEmpty @RequestParam("detailImageList") List<String> detailImageList) {
-                                              @NotBlank String detailImageList) {
-        return carModelService.insertCarModel(modelName, stock, price, desc, mainImageUrl, detailImageList);
+                                              @NotBlank String detailImageList,
+                                              @NotNull @Min(0) Integer carLength,
+                                              @NotNull @Min(0) Integer carWidth,
+                                              @NotNull @Min(0) Integer carHeight,
+                                              @NotNull @Min(0) Integer wheelBase,
+                                              @NotNull @Min(0) Integer displacement,
+                                              @NotNull @Min(0) BigDecimal accelerationTime,
+                                              @NotNull @Min(0) BigDecimal oilConsumption,
+                                              @NotNull @Min(0) BigDecimal fuelTankCapacity) {
+        return carModelService.insertCarModel(modelName, stock, price, desc, mainImageUrl, detailImageList,
+                                            carLength, carWidth, carHeight, wheelBase, displacement, accelerationTime, oilConsumption, fuelTankCapacity);
     }
 
     @PostMapping("carModel/delete/by/id")
@@ -176,6 +182,14 @@ public class AdminController extends BaseController {
                                                                    Integer pageNum,
                                                                    Integer pageSize) {
         return carModelService.getPreOrderInfo(null, startTime, endTime, pageNum, pageSize);
+    }
+
+    @PostMapping("after/sale/service/list")
+    public ResultMessage<List<AfterSaleServiceDTO>> getAfterSaleServiceList(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
+                                                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
+                                                                            Integer pageNum,
+                                                                            Integer pageSize) {
+        return carModelService.getAfterSaleServiceList(startTime, endTime, pageNum, pageSize);
     }
 
 }

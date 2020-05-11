@@ -1,7 +1,7 @@
 // import axios from '../utils/axios';
 import axios from 'axios';
-export const baseUrl = "http://192.168.199.182/"
-// export const baseUrl = "http://localhost/"
+//export const baseUrl = "http://192.168.199.182/"
+export const baseUrl = "http://localhost/"
 
 export const fetchData = query => {
     return axios({
@@ -100,5 +100,13 @@ export const uploadFile = query => {
         headers: {
             'Content-Type' : 'multipart/form-data'
         },
+    });
+};
+
+export const getAfterSaleServiceList = query => {
+    return axios({
+        url: baseUrl + 'admin/after/sale/service/list/',
+        method: 'post',
+        params: query
     });
 };

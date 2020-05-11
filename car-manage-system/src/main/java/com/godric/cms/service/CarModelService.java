@@ -1,9 +1,6 @@
 package com.godric.cms.service;
 
-import com.godric.cms.common.dto.CarModelDTO;
-import com.godric.cms.common.dto.CarModelDetailDTO;
-import com.godric.cms.common.dto.PreOrderInfoDTO;
-import com.godric.cms.common.dto.ResultMessage;
+import com.godric.cms.common.dto.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,7 +19,14 @@ public interface CarModelService {
      * @param pageSize page size
      * @return car model list
      */
-    ResultMessage<List<CarModelDTO>> getCarModelList(String modelName, Integer pageNum, Integer pageSize);
+    ResultMessage<List<CarModelDTO>> getCarModelList(String modelName, Integer minCarLength,
+                                                     Integer maxCarLength,
+                                                     Integer minCarWidth,
+                                                     Integer maxCarWidth,
+                                                     Integer minCarHeight,
+                                                     Integer maxCarHeight,
+                                                     Integer minWheelBase,
+                                                     Integer maxWheelBase, Integer pageNum, Integer pageSize);
 
     /**
      * insert car model info
@@ -47,7 +51,9 @@ public interface CarModelService {
      * @param detailImageList detail image list
      * @return whether insert success or not
      */
-    ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList);
+    ResultMessage<Void> insertCarModel(String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList,
+                                       Integer carLength, Integer carWidth, Integer carHeight, Integer wheelBase, Integer displacement, BigDecimal accelerationTime,
+                                       BigDecimal oilConsumption, BigDecimal fuelTankCapacity);
 
     /**
      * get car model detail
@@ -62,7 +68,7 @@ public interface CarModelService {
      * @param userId user id who login
      * @return whether pre order is success or not
      */
-    ResultMessage<Void> preOrderCarModel(Integer carModelId, Integer userId);
+    ResultMessage<Void> preOrderCarModel(Integer carModelId, Integer userId, String fullName, String phone, String email);
 
     /**
      * cancel pre order
@@ -116,4 +122,7 @@ public interface CarModelService {
      */
     ResultMessage<Void> updateCarModelById(Integer carModelId, String modelName, Integer stock, BigDecimal price, String desc, String mainImageUrl, String detailImageList);
 
+    ResultMessage<Void> insertAfterSaleService(Integer preOrderId, String fullName, String phone, String email, String serviceContent);
+
+    ResultMessage<List<AfterSaleServiceDTO>> getAfterSaleServiceList(LocalDateTime startTime, LocalDateTime endTime, Integer pageNum, Integer pageSize);
 }

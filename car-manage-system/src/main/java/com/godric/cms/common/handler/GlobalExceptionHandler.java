@@ -2,8 +2,6 @@ package com.godric.cms.common.handler;
 
 import com.godric.cms.common.dto.ResultMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.binding.BindingException;
-import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

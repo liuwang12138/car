@@ -42,6 +42,33 @@ public class CarModelPO {
     @TableField("detail_image_url")
     private String detailImageUrl;
 
+    /**
+     * new fields
+     */
+    @TableField("car_length")
+    private Integer carLength;
+
+    @TableField("car_width")
+    private Integer carWidth;
+
+    @TableField("car_height")
+    private Integer carHeight;
+
+    @TableField("wheel_base")
+    private Integer wheelBase;
+
+    @TableField("displacement")
+    private Integer displacement;
+
+    @TableField("acceleration_time")
+    private BigDecimal accelerationTime;
+
+    @TableField("oil_consumption")
+    private BigDecimal oilConsumption;
+
+    @TableField("fuel_tank_capacity")
+    private BigDecimal fuelTankCapacity;
+
     @TableField("create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

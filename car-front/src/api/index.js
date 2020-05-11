@@ -1,5 +1,6 @@
 import axios from 'axios';
-const baseUrl = "http://192.168.199.182/"
+// const baseUrl = "http://192.168.199.182/"
+const baseUrl = "http://localhost/"
 
 export const login = query => {
     return axios({
@@ -67,6 +68,14 @@ export const cancelPreOrder = query => {
 export const getMyPreOrderInfo = query => {
     return axios({
         url: baseUrl + 'carModel/getMyPreOrderInfo/',
+        method: 'post',
+        params: query
+    });
+};
+
+export const insertAfterSaleService = query => {
+    return axios({
+        url: baseUrl + 'carModel/afterSaleService/insert/',
         method: 'post',
         params: query
     });

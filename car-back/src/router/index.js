@@ -32,6 +32,12 @@ export default new Router({
                     meta: { title: '库存管理' }
                 },
                 {
+                    // afterSaleService
+                    path: '/afterSaleService',
+                    component: () => import(/* webpackChunkName: "AfterSaleService" */ '../components/page/AfterSaleService.vue'),
+                    meta: { title: '售后服务'}
+                },
+                {
                     path: '/404',
                     component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
                     meta: { title: '404' }

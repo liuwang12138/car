@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -31,9 +32,17 @@ public class CarModelController extends BaseController {
      */
     @PostMapping("list")
     public ResultMessage<List<CarModelDTO>> getCarModelList(String modelName,
+                                                            Integer minCarLength,
+                                                            Integer maxCarLength,
+                                                            Integer minCarWidth,
+                                                            Integer maxCarWidth,
+                                                            Integer minCarHeight,
+                                                            Integer maxCarHeight,
+                                                            Integer minWheelBase,
+                                                            Integer maxWheelBase,
                                                             Integer pageNum,
                                                             Integer pageSize) {
-        return carModelService.getCarModelList(modelName, pageNum, pageSize);
+        return carModelService.getCarModelList(modelName, minCarLength, maxCarLength, minCarWidth, maxCarWidth, minCarHeight, maxCarHeight, minWheelBase, maxWheelBase, pageNum, pageSize);
     }
 
     /**
@@ -54,13 +63,16 @@ public class CarModelController extends BaseController {
      */
     @PostMapping("preOrder")
     public ResultMessage<Void> preOrderCarModel(@NotNull Integer carModelId,
+                                                @NotNull String fullName,
+                                                @NotNull String phone,
+                                                @Email String email,
                                                 HttpServletRequest request) {
         ResultMessage<UserPO> loginUserInfo = this.getLoginUserInfo(request);
         if (!loginUserInfo.isSuccess()) {
             ResultMessage.fail(loginUserInfo.getMessage());
         }
         Integer userId = loginUserInfo.getData().getId();
-        return carModelService.preOrderCarModel(carModelId, userId);
+        return carModelService.preOrderCarModel(carModelId, userId, fullName, phone, email);
 
     }
 
@@ -102,6 +114,15 @@ public class CarModelController extends BaseController {
         Integer userId = loginUserInfo.getData().getId();
 
         return carModelService.getPreOrderInfo(userId, null, null, pageNum, pageSize);
+    }
+
+    @PostMapping("afterSaleService/insert")
+    public ResultMessage<Void> insertAfterSaleService(@NotNull Integer preOrderId,
+                                                      @NotNull String fullName,
+                                                      @NotNull String phone,
+                                                      @Email String email,
+                                                      @NotNull String serviceContent) {
+        return carModelService.insertAfterSaleService(preOrderId, fullName, phone, email, serviceContent);
     }
 
 }
